@@ -1,5 +1,6 @@
 package com.example.partyregistration.data
 
+import android.net.Uri
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -21,6 +22,8 @@ data class Party(
     @ColumnInfo("Email")
     var email:String,
     @ColumnInfo("Website")
-    var website:String
+    var website:String,
+    @ColumnInfo("Document")
+    var document: String?
 
 ) : Parcelable

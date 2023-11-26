@@ -3,6 +3,7 @@ package com.example.partyregistration.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 if(isDataExist(name, email, phone)){
                     Toast.makeText(this, "Name , Phone Number or email already exist", Toast.LENGTH_SHORT).show()
                 }else{
-                    val party = Party(0,name,secretary,phone,email,scanResult)
+                    val party = Party(0,name,secretary,phone,email,scanResult, pdfUri.toString())
                     viewModel.addData(party)
                     Toast.makeText(this, "Party Registered successfully", Toast.LENGTH_SHORT).show()
                 }
@@ -75,7 +76,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.addDoc.setOnClickListener {
-            Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show()
+//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+//            intent.addCategory(Intent.CATEGORY_OPENABLE)
+//            intent.type = "application/pdf" // Filter to only show PDF files
+//            startActivityForResult(intent, PICK_PDF_REQUEST)
+
+            if(pdfUri!=null){
+                Toast.makeText(this, pdfUri.toString(), Toast.LENGTH_SHORT).show()
+                Log.d("pdfPath",pdfUri.toString())
+            }
+                val intent = Intent(this, DisplayPdfActivity::class.java)
+//                intent.putExtra("pdfPath", pdfPath)
+                startActivity(intent)
+
         }
 
 
@@ -99,10 +113,30 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == PICK_PDF_REQUEST && resultCode == Activity.RESULT_OK) {
+//            data?.data?.let { pdfUri ->
+//                val pdfPath = pdfUri.toString() // Convert URI to string
+//                // Start another activity and pass the PDF path
+//                val intent = Intent(this, DisplayPdfActivity::class.java)
+//                intent.putExtra("pdfPath", pdfPath)
+//                startActivity(intent)
+//                Toast.makeText(this, pdfPath, Toast.LENGTH_SHORT).show()
+//                Log.d("pdfPath",pdfPath)
+//            }
+//        }
+//    }
+
+
+
 
 
     companion object{
         var scanResult = ""
+        var pdfUri : Uri? = null
+        const val PICK_PDF_REQUEST = 10
     }
 
 

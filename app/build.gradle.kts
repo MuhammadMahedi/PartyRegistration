@@ -76,4 +76,8 @@ dependencies {
     //Dependency Injection
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+
+    implementation("com.github.barteksc:android-pdf-viewer:2.8.2")
+
+
 }

@@ -19,11 +19,10 @@ class ScanActivity : AppCompatActivity() {
     lateinit var binding: ActivityScanBinding
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            isGranted: Boolean ->{
-                if(isGranted){
-                   showCamera()
-                }else{
-
+            isGranted: Boolean ->
+            run {
+                if (isGranted) {
+                    showCamera()
                 }
             }
         }
@@ -48,7 +47,6 @@ class ScanActivity : AppCompatActivity() {
         checkPermissionCamera(this)
 
         binding.rescan.setOnClickListener {
-            Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show()
             checkPermissionCamera(this)
         }
         binding.save.setOnClickListener {
