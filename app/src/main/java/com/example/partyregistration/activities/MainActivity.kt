@@ -1,4 +1,4 @@
-package com.example.partyregistration
+package com.example.partyregistration.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -7,10 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.partyregistration.R
 import com.example.partyregistration.data.Party
 import com.example.partyregistration.databinding.ActivityMainBinding
 import com.example.partyregistration.viewModels.PartyViewModel
@@ -49,22 +51,34 @@ class MainActivity : AppCompatActivity() {
                 if(isDataExist(name, email, phone)){
                     Toast.makeText(this, "Name , Phone Number or email already exist", Toast.LENGTH_SHORT).show()
                 }else{
-                    val party = Party(0,name,secretary,phone,email)
+                    val party = Party(0,name,secretary,phone,email,scanResult)
                     viewModel.addData(party)
                     Toast.makeText(this, "Party Registered successfully", Toast.LENGTH_SHORT).show()
                 }
 
             }
-
-
-
-
         }
+
+
 
         binding.btnScan.setOnClickListener {
             //startQRScanner()
-            checkCameraPermission()
+            //checkCameraPermission()
+            startActivity(Intent(this,ScanActivity::class.java))
         }
+        binding.tvScan.setOnClickListener {
+            if(scanResult!=""){
+                binding.tvScan.text = scanResult
+            }else{
+                Toast.makeText(this, "Scan a valid QR Code With proper URL", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.addDoc.setOnClickListener {
+            Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show()
+        }
+
+
 
         viewModel.getAllParties()
         viewModel.allParties.observe(this){
@@ -84,44 +98,11 @@ class MainActivity : AppCompatActivity() {
         return (viewModel.checkDuplicate(name,email, phone) > 0)
     }
 
-    // Function to start QR code scanner
-    private fun startQRScanner() {
-        val intent = Intent("com.google.zxing.client.android.SCAN")
-        intent.putExtra("SCAN_MODE", "QR_CODE_MODE")
-        startActivityForResult(intent, QR_CODE_REQUEST_CODE)
-    }
 
 
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this, android.Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
-            )
-        } else {
-            // Permission is already granted, start QR scanner
-            startQRScanner()
-        }
-    }
-
-    // Handle the result of the QR code scan
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == QR_CODE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val contents = data?.getStringExtra("SCAN_RESULT")
-            // Handle the scanned QR code contents here
-            // 'contents' variable contains the scanned QR code data
-        }
-    }
 
     companion object{
-        const val QR_CODE_REQUEST_CODE = 10
-        const val CAMERA_PERMISSION_CODE = 100
+        var scanResult = ""
     }
 
 

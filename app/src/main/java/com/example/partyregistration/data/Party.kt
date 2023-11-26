@@ -19,5 +19,8 @@ data class Party(
     @ColumnInfo("Phone")
     var phone:String,
     @ColumnInfo("Email")
-    var email:String
+    var email:String,
+    @ColumnInfo("Website")
+    var website:String
+
 ) : Parcelable
