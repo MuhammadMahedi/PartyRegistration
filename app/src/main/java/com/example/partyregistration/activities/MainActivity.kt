@@ -37,15 +37,19 @@ class MainActivity : AppCompatActivity() {
             val email = binding.etEmail.text.toString()
 
             if(name.isEmpty()){
+                binding.etName.error = "Please Enter Party's name"
                 Toast.makeText(this, "Please Enter Party's name", Toast.LENGTH_SHORT).show()
             }
             else if(secretary.isEmpty()){
+                binding.etSecretary.error ="Please Enter Secretary's name"
                 Toast.makeText(this, "Please Enter Secretary's name", Toast.LENGTH_SHORT).show()
             }
             else if(!(phone.startsWith("01")) || phone.length!=11 ){
+                binding.etPhone.error = "Please Enter a valid BD mobile number of 11 digits"
                 Toast.makeText(this, "Please Enter a valid BD mobile number of 11 digits", Toast.LENGTH_SHORT).show()
             }
             else if(email.isEmpty() || !(isValidEmail(email))){
+                binding.etEmail.error = "Please Enter a proper email address"
                 Toast.makeText(this, "Please Enter a proper email address", Toast.LENGTH_SHORT).show()
             }else{
 
@@ -54,7 +58,13 @@ class MainActivity : AppCompatActivity() {
                 }else{
                     val party = Party(0,name,secretary,phone,email,scanResult, pdfUri.toString())
                     viewModel.addData(party)
+                    clearAll()
                     Toast.makeText(this, "Party Registered successfully", Toast.LENGTH_SHORT).show()
+                    var list : List<Party>? = null
+                    viewModel.allParties.observe(this@MainActivity){
+                      list= it
+                    }
+                    gotoTheLists(viewModel.allParties.value)
                 }
 
             }
@@ -76,11 +86,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.addDoc.setOnClickListener {
-//            Toast.makeText(this, scanResult, Toast.LENGTH_SHORT).show()
-//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-//            intent.addCategory(Intent.CATEGORY_OPENABLE)
-//            intent.type = "application/pdf" // Filter to only show PDF files
-//            startActivityForResult(intent, PICK_PDF_REQUEST)
 
             if(pdfUri!=null){
                 Toast.makeText(this, pdfUri.toString(), Toast.LENGTH_SHORT).show()
@@ -90,6 +95,12 @@ class MainActivity : AppCompatActivity() {
 //                intent.putExtra("pdfPath", pdfPath)
                 startActivity(intent)
 
+        }
+
+        binding.btnPartyList.setOnClickListener {
+            viewModel.allParties.observe(this@MainActivity){
+                gotoTheLists(it)
+            }
         }
 
 
@@ -104,6 +115,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun clearAll() {
+        with(binding){
+            this.etName.text?.clear()
+            this.etSecretary.text?.clear()
+            this.etPhone.text?.clear()
+            this.etEmail.text?.clear()
+            this.tvScan.text =" Show Website Url"
+            this.etEmail.clearFocus()
+            scanResult=""
+        }
+    }
+
     fun isValidEmail(email: CharSequence): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
@@ -112,31 +135,24 @@ class MainActivity : AppCompatActivity() {
         return (viewModel.checkDuplicate(name,email, phone) > 0)
     }
 
+    private fun gotoTheLists(list: List<Party>?){
+        val intent = Intent(this, PartyListActivity::class.java)
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == PICK_PDF_REQUEST && resultCode == Activity.RESULT_OK) {
-//            data?.data?.let { pdfUri ->
-//                val pdfPath = pdfUri.toString() // Convert URI to string
-//                // Start another activity and pass the PDF path
-//                val intent = Intent(this, DisplayPdfActivity::class.java)
-//                intent.putExtra("pdfPath", pdfPath)
-//                startActivity(intent)
-//                Toast.makeText(this, pdfPath, Toast.LENGTH_SHORT).show()
-//                Log.d("pdfPath",pdfPath)
-//            }
-//        }
-//    }
+            //list = viewModel.allParties.value
+            // Convert List<Party> to ArrayList<Party>
+            val parcelablePartyList: ArrayList<Party>? = list?.let {
+                ArrayList<Party>(it)
+            }
+            intent.putParcelableArrayListExtra("PartyList",parcelablePartyList)
+            startActivity(intent)
 
 
-
+    }
 
 
     companion object{
         var scanResult = ""
         var pdfUri : Uri? = null
-        const val PICK_PDF_REQUEST = 10
     }
 
 

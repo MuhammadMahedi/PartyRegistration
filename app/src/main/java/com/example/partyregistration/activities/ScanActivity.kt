@@ -44,6 +44,8 @@ class ScanActivity : AppCompatActivity() {
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setToolbar()
+
         checkPermissionCamera(this)
 
         binding.rescan.setOnClickListener {
@@ -82,5 +84,18 @@ class ScanActivity : AppCompatActivity() {
         options.setOrientationLocked(false)
 
         scanLauncher.launch(options)
+    }
+
+
+    private fun setToolbar(){
+        val toolbar = binding.scanToolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = "Scan Your QR"
+            setDisplayHomeAsUpEnabled(true) // Show back button
+        }
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 }

@@ -21,6 +21,15 @@
         android:theme="@style/Theme.PartyRegistration"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ShowDocumentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PartyDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PartyListActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.DisplayPdfActivity"
             android:exported="false" />
         <activity

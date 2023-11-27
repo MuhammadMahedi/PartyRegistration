@@ -3,8 +3,11 @@ package com.example.partyregistration.activities
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import com.example.partyregistration.R
 import com.example.partyregistration.activities.MainActivity.Companion.pdfUri
 import com.example.partyregistration.databinding.ActivityDisplayPdfBinding
@@ -17,12 +20,8 @@ class DisplayPdfActivity : AppCompatActivity() {
         binding = ActivityDisplayPdfBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setToolbar()
 
-
-        //val pdfPath = intent.getStringExtra("pdfPath")
-        //val webView: WebView = findViewById(R.id.pdfWebView)
-//        webView.settings.javaScriptEnabled = true
-//        webView.loadUrl("file:///android_asset/pdfviewer/index.html?file=$pdfPath")
 
         val launchPdf = registerForActivityResult(
             ActivityResultContracts.GetContent()
@@ -36,6 +35,7 @@ class DisplayPdfActivity : AppCompatActivity() {
                     .load()
                 binding.pdfview.fitToWidth()
                 binding.pdfview.useBestQuality(true)
+                Log.d("showPath", it.toString())
             }
 
             pdfUri = uri
@@ -46,7 +46,22 @@ class DisplayPdfActivity : AppCompatActivity() {
         launchPdf.launch("application/pdf")
 
         binding.fabSave.setOnClickListener {
+            if(pdfUri!=null) {
+                Toast.makeText(this, "Document added successfully", Toast.LENGTH_SHORT).show()
+            }
             finish()
+        }
+    }
+
+    private fun setToolbar(){
+        val toolbar = binding.documentToolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = "Select your Documents" // Clear default title
+            setDisplayHomeAsUpEnabled(true) // Show back button
+        }
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
         }
     }
 }
