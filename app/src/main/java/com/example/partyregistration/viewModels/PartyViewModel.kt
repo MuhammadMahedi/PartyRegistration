@@ -17,27 +17,39 @@ class PartyViewModel @Inject constructor(var repo: PartyRepo)  :  ViewModel(){
     val allParties: LiveData<List<Party>> get() = _allParties
 
     fun addData(party: Party){
+        viewModelScope.launch {
+            repo.addParty(party)
+        }
 
-        repo.addParty(party)
-        getAllParties()
     }
 
     fun deleteData(party: Party){
-
-            repo.deleteParty(party)
-            getAllParties()
-
+            viewModelScope.launch {
+                repo.deleteParty(party)
+                getAllParties()
+            }
     }
 
     fun updateData(party: Party){
-
-            repo.updateParty(party)
-            getAllParties()
-
+            viewModelScope.launch{
+                repo.updateParty(party)
+                getAllParties()
+            }
     }
 
     fun checkDuplicate(name: String ,email: String, phone: String): Int{
         return repo.checkDuplicate(name, email, phone)
+    }
+
+    fun checkNameExist(name: String): Int{
+        return repo.checkNameExist(name)
+    }
+    fun checkEmailExist(email: String): Int{
+        return repo.checkEmailExist(email)
+    }
+
+    fun checkPhoneExist(phone: String): Int{
+        return repo.checkPhoneExist(phone)
     }
 
 

@@ -10,20 +10,32 @@ class PartyRepo @Inject constructor(private val dao: PartyDao) {
         return dao.getAllParties()
     }
 
-    fun deleteParty(party: Party){
+    suspend fun deleteParty(party: Party){
         dao.deleteParty(party)
     }
 
-    fun addParty(party: Party){
+   suspend fun addParty(party: Party){
         dao.createParty(party)
     }
 
-    fun updateParty(party: Party){
+    suspend fun updateParty(party: Party){
         dao.updateParty(party)
     }
 
     fun checkDuplicate(name: String, email: String, phone: String): Int {
         return dao.checkDuplicate(name, email, phone)
+    }
+
+    fun checkNameExist(name: String): Int{
+        return dao.checkNameExist(name)
+    }
+
+    fun checkEmailExist(email: String): Int{
+        return dao.checkEmailExist(email)
+    }
+
+    fun checkPhoneExist(phone: String): Int{
+        return dao.checkPhoneExist(phone)
     }
 
 }

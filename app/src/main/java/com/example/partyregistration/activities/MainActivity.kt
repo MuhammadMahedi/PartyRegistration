@@ -53,9 +53,17 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please Enter a proper email address", Toast.LENGTH_SHORT).show()
             }else{
 
-                if(isDataExist(name, email, phone)){
-                    Toast.makeText(this, "Name , Phone Number or email already exist", Toast.LENGTH_SHORT).show()
-                }else{
+//                if(isDataExist(name, email, phone)){
+//                    Toast.makeText(this, "Name , Phone Number or email already exist", Toast.LENGTH_SHORT).show()
+//                }else
+                if(isNameExist(name)){
+                    binding.etName.error = "Name already exist"
+                }else if(isPhoneExist(phone)){
+                    binding.etPhone.error = "Phone already exist"
+                }else if(isEmailExist(email)){
+                    binding.etEmail.error = "Email already exist"
+                }
+                else{
                     val party = Party(0,name,secretary,phone,email,scanResult, pdfUri.toString())
                     viewModel.addData(party)
                     clearAll()
@@ -99,8 +107,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnPartyList.setOnClickListener {
             viewModel.allParties.observe(this@MainActivity){
-                gotoTheLists(it)
+                //gotoTheLists(it)
+
             }
+
+            val intent = Intent(this, PartyListActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -133,6 +145,15 @@ class MainActivity : AppCompatActivity() {
 
     fun isDataExist(name: String ,email: String ,phone:String):Boolean{
         return (viewModel.checkDuplicate(name,email, phone) > 0)
+    }
+    fun isNameExist(name: String):Boolean{
+        return (viewModel.checkNameExist(name) > 0)
+    }
+    fun isPhoneExist(phone:String):Boolean{
+        return (viewModel.checkPhoneExist(phone) > 0)
+    }
+    fun isEmailExist(email: String):Boolean{
+        return (viewModel.checkEmailExist(email) > 0)
     }
 
     private fun gotoTheLists(list: List<Party>?){

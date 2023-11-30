@@ -31,11 +31,16 @@ class PartyAdapter( private val context: Context,
             holder.tvPartyName.text = party.name
             holder.tvSecretaryName.text = party.secretary
 
+            holder.delBtn.setOnClickListener {
+                onClickListener?.onDeleteClick(party)
+            }
+
             holder.itemView.setOnClickListener{
                 if(onClickListener!=null){
                     onClickListener!!.onClick(position, party)
                 }
             }
+
 //            holder.delBtn.setOnClickListener{
 //                onClickListener!!.onDeleteClick(party)
 //            }
@@ -44,9 +49,9 @@ class PartyAdapter( private val context: Context,
     }
 
     class MyViewHolder(private val view: View): RecyclerView.ViewHolder(view){
-        val tvPartyName = view.findViewById<TextView>(R.id.tv_party_name)
-        val tvSecretaryName = view.findViewById<TextView>(R.id.tv_secretary_name)
-        val delBtn= view.findViewById<ImageView>(R.id.btn_delete)
+        val tvPartyName = view.findViewById<TextView>(R.id.party_name)
+        val tvSecretaryName = view.findViewById<TextView>(R.id.secretary_name)
+        val delBtn= view.findViewById<ImageView>(R.id.delete_icon)
     }
 
     fun setOnClickListener(onClickListener: OnClickListener){
